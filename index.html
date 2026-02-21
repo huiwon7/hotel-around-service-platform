@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>호텔어라운드 평창 | 서비스플랫폼 전환 기획안</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f6fa;color:#1a1a2e;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  /* ===== HERO ===== */
+  .hero{background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%);padding:56px 24px 44px;color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:260px;height:260px;background:rgba(99,102,241,0.15);border-radius:50%}
+  .hero::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;background:rgba(99,102,241,0.08);border-radius:50%}
+  .hero-badge{display:inline-block;background:rgba(99,102,241,0.3);backdrop-filter:blur(10px);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:16px;color:#a5b4fc}
+  .hero h1{font-size:26px;font-weight:900;line-height:1.35;margin-bottom:12px}
+  .hero h1 span{color:#818cf8}
+  .hero p{font-size:13px;opacity:0.75;line-height:1.7;font-weight:300;margin-bottom:24px}
+  .hero-kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .kpi-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center}
+  .kpi-card .kpi-label{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+  .kpi-card .kpi-now{font-size:11px;color:#f87171;margin-bottom:2px}
+  .kpi-card .kpi-target{font-size:20px;font-weight:800;color:#34d399}
+  .kpi-card .kpi-target.warn{color:#fbbf24}
+  .hero-meta{display:flex;justify-content:space-between;margin-top:20px;font-size:11px;color:rgba(255,255,255,0.4)}
+  .hero-meta .conf{background:rgba(239,68,68,0.2);color:#fca5a5;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:600}
+
+  /* ===== NAV ===== */
+  .nav{position:sticky;top:0;z-index:100;background:#fff;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{flex-shrink:0;padding:13px 16px;font-size:12px;font-weight:500;color:#888;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:.2s}
+  .nav a.active,.nav a:hover{color:#6366f1;border-bottom-color:#6366f1}
+
+  /* ===== SECTION ===== */
+  .section{padding:36px 20px}
+  .s-label{display:inline-block;background:#eef2ff;color:#6366f1;font-size:11px;font-weight:600;padding:4px 12px;border-radius:12px;letter-spacing:.5px;margin-bottom:10px}
+  .s-title{font-size:21px;font-weight:800;margin-bottom:6px;line-height:1.35}
+  .s-sub{font-size:13px;color:#888;margin-bottom:24px;line-height:1.6}
+
+  /* ===== GENERIC CARD ===== */
+  .card{background:#fff;border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+  .card h3{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .card p,.card li{font-size:13px;color:#555;line-height:1.7}
+  .card ul{list-style:none;margin-top:8px}
+  .card ul li{padding:4px 0;display:flex;align-items:flex-start;gap:7px}
+  .card ul li::before{content:'';width:6px;height:6px;border-radius:50%;background:#6366f1;flex-shrink:0;margin-top:7px}
+
+  /* ===== HIGHLIGHT BOX ===== */
+  .highlight-box{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-left:4px solid #6366f1;border-radius:0 14px 14px 0;padding:18px 20px;margin-bottom:16px}
+  .highlight-box p{font-size:13px;color:#3730a3;font-weight:500;line-height:1.7}
+  .highlight-box.warn{background:linear-gradient(135deg,#fef3c7,#fde68a);border-left-color:#f59e0b}
+  .highlight-box.warn p{color:#92400e}
+  .highlight-box.danger{background:linear-gradient(135deg,#fee2e2,#fecaca);border-left-color:#ef4444}
+  .highlight-box.danger p{color:#991b1b}
+
+  /* ===== TABLE ===== */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -20px;padding:0 20px 8px}
+  .tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.05);min-width:480px}
+  .tbl thead th{background:#1e293b;color:#fff;font-size:11px;font-weight:600;padding:12px 10px;text-align:center;white-space:nowrap}
+  .tbl tbody td{padding:12px 10px;font-size:12px;text-align:center;border-bottom:1px solid #f0f1f5}
+  .tbl tbody td:first-child{text-align:left;font-weight:600;padding-left:14px}
+  .tbl tbody tr:last-child{background:#f8fafc;font-weight:700}
+  .tbl .hl{color:#6366f1;font-weight:700}
+  .tbl .green{color:#059669;font-weight:700}
+
+  /* ===== FLOW DIAGRAM ===== */
+  .flow{display:grid;grid-template-columns:1fr;gap:0;margin-bottom:20px}
+  .flow-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+  .flow-header{font-size:11px;font-weight:700;text-align:center;padding:10px 8px;border-radius:10px;color:#fff}
+  .flow-header.col1{background:#6366f1}
+  .flow-header.col2{background:#0891b2}
+  .flow-header.col3{background:#059669}
+  .flow-item{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px;text-align:center;font-size:11px;font-weight:500;color:#475569}
+
+  /* ===== TIMELINE ===== */
+  .timeline{position:relative;padding-left:28px}
+  .timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:#e0e7ff}
+  .tl-item{position:relative;padding:14px 0 14px 20px}
+  .tl-item::before{content:'';position:absolute;left:-23px;top:20px;width:14px;height:14px;background:#6366f1;border-radius:50%;border:3px solid #eef2ff}
+  .tl-item .tl-date{font-size:11px;font-weight:700;color:#6366f1;margin-bottom:4px}
+  .tl-item h4{font-size:14px;font-weight:700;margin-bottom:2px}
+  .tl-item p{font-size:12px;color:#888}
+  .tl-item .tl-badge{display:inline-block;background:#eef2ff;color:#6366f1;font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;margin-top:4px}
+
+  /* ===== SEASON CARDS ===== */
+  .season-card{border-radius:16px;padding:20px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
+  .season-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,0.1);border-radius:50%}
+  .season-card h4{font-size:15px;font-weight:700;margin-bottom:6px}
+  .season-card p{font-size:12px;opacity:0.85;line-height:1.6}
+  .season-card .s-tag{font-size:10px;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:8px;display:inline-block;margin-bottom:8px}
+  .spring{background:linear-gradient(135deg,#86efac,#22c55e)}
+  .summer{background:linear-gradient(135deg,#38bdf8,#0284c7)}
+  .autumn{background:linear-gradient(135deg,#fb923c,#ea580c)}
+  .winter{background:linear-gradient(135deg,#a5b4fc,#6366f1)}
+
+  /* ===== CHANNEL GRID ===== */
+  .ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+  .ch-card{background:#fff;border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+  .ch-card .ch-icon{width:44px;height:44px;border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+  .ch-card h4{font-size:13px;font-weight:700;margin-bottom:3px}
+  .ch-card p{font-size:11px;color:#888;line-height:1.4}
+
+  /* ===== MARKETING MATRIX ===== */
+  .mx-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+  .mx-card .mx-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .mx-card h4{font-size:14px;font-weight:700;margin-bottom:2px}
+  .mx-card p{font-size:12px;color:#888}
+  .mx-card .mx-freq{font-size:11px;color:#6366f1;font-weight:600;margin-top:2px}
+
+  /* ===== RISK CARD ===== */
+  .risk-card{background:#fff;border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.04);border-left:4px solid #f59e0b}
+  .risk-card h4{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  .risk-card .risk-level{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600}
+  .risk-card .risk-level.mid{background:#fef3c7;color:#92400e}
+  .risk-card .risk-level.low{background:#d1fae5;color:#065f46}
+  .risk-card p{font-size:12px;color:#666;line-height:1.6}
+  .risk-card .risk-metric{font-size:11px;color:#6366f1;font-weight:500;margin-top:4px}
+
+  /* ===== CHECKLIST ===== */
+  .checklist{list-style:none}
+  .checklist li{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:8px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+  .checklist li .ck-num{width:28px;height:28px;border-radius:8px;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+
+  /* ===== FOOTER ===== */
+  .footer{background:#0f172a;color:#fff;padding:32px 24px;text-align:center}
+  .footer h3{font-size:17px;font-weight:700;margin-bottom:4px}
+  .footer .f-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px}
+  .footer .f-tag{display:inline-block;background:rgba(239,68,68,0.2);color:#fca5a5;padding:4px 12px;border-radius:8px;font-size:11px;font-weight:600}
+
+  .section:last-of-type{padding-bottom:40px}
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-top:6px}
+  .progress-bar .fill{height:100%;border-radius:3px;transition:width .3s}
+  .fill.purple{background:#6366f1}
+  .fill.green{background:#059669}
+  .fill.red{background:#ef4444}
+  .fill.yellow{background:#f59e0b}
+
+  /* ===== VERSUS ===== */
+  .vs-row{display:flex;gap:8px;margin-bottom:12px}
+  .vs-box{flex:1;border-radius:14px;padding:16px;text-align:center}
+  .vs-box.now{background:#fee2e2;border:1px solid #fecaca}
+  .vs-box.goal{background:#d1fae5;border:1px solid #a7f3d0}
+  .vs-box .vs-label{font-size:11px;color:#888;margin-bottom:4px}
+  .vs-box .vs-value{font-size:24px;font-weight:900}
+  .vs-box.now .vs-value{color:#ef4444}
+  .vs-box.goal .vs-value{color:#059669}
+  .vs-arrow{display:flex;align-items:center;font-size:20px;color:#6366f1;font-weight:700}
+
+  /* ===== CRM TRIGGER ===== */
+  .crm-flow{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;margin:0 -20px;padding-left:20px;padding-right:20px}
+  .crm-flow::-webkit-scrollbar{display:none}
+  .crm-step{min-width:130px;background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05);flex-shrink:0}
+  .crm-step .crm-icon{font-size:24px;margin-bottom:6px}
+  .crm-step h5{font-size:12px;font-weight:700;margin-bottom:2px}
+  .crm-step p{font-size:10px;color:#888}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-badge">INTERNAL STRATEGY</div>
+  <h1>호텔어라운드 평창<br><span>서비스플랫폼</span> 전환 기획안</h1>
+  <p>모바일 숙박권(선결제 바우처) 기반 직접예약 전환<br>+ 평창 로컬콘텐츠 통합</p>
+
+  <div class="hero-kpi">
+    <div class="kpi-card">
+      <div class="kpi-label">OTA 의존도</div>
+      <div class="kpi-now">현재 85~90%</div>
+      <div class="kpi-target warn">40% 이하</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">직접예약 비율</div>
+      <div class="kpi-now">현재 10~15%</div>
+      <div class="kpi-target">60% 이상</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">OTA 수수료율</div>
+      <div class="kpi-now">현재 36.5%</div>
+      <div class="kpi-target">15% 이하</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">숙박권 월 판매</div>
+      <div class="kpi-now">현재 0건</div>
+      <div class="kpi-target">650건</div>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <span>작성일: 2026-02</span>
+    <span class="conf">대외비(내부 검토용)</span>
+  </div>
+</section>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <a href="#summary">요약</a>
+  <a href="#status">현황</a>
+  <a href="#positioning">포지셔닝</a>
+  <a href="#platform">플랫폼설계</a>
+  <a href="#mvp">1단계MVP</a>
+  <a href="#marketing">마케팅</a>
+  <a href="#local">로컬콘텐츠</a>
+  <a href="#roadmap">로드맵</a>
+  <a href="#kpi">KPI/재무</a>
+  <a href="#decision">의사결정</a>
+</nav>
+
+<!-- ===== 1. 요약 ===== -->
+<section class="section" id="summary">
+  <span class="s-label">EXECUTIVE SUMMARY</span>
+  <h2 class="s-title">1. 요약</h2>
+
+  <div class="highlight-box danger">
+    <p>문제: 객실 판매량이 증가해도 OTA 수수료(매출 대비 36.5%)로 영업이익이 개선되지 않는 구조. 월평균 2,636만원 영업손실 지속.</p>
+  </div>
+
+  <div class="highlight-box">
+    <p>해결: 호텔을 '객실 판매처'가 아니라 장기체류·힐링·워케이션·MICE·로컬체험을 통합 운영하는 서비스 플랫폼으로 전환.</p>
+  </div>
+
+  <div class="card">
+    <h3>🚀 3단계 전환 전략</h3>
+    <ul>
+      <li><strong>1단계(MVP)</strong> — 모바일 숙박권(선결제 바우처)로 OTA 0% 판매 구조, 구매자 데이터 직접 확보</li>
+      <li><strong>2단계</strong> — 평창 사계절 콘텐츠를 패키지/마켓 형태로 묶어 체류 중 소비(식음·체험) 확대</li>
+      <li><strong>3단계</strong> — 멤버십/CRM 고도화로 재방문과 장기체류를 구독/패스 모델로 전환</li>
+    </ul>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">12개월 성과 목표</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>지표</th><th>현재</th><th>12개월 목표</th></tr></thead>
+      <tbody>
+        <tr><td>OTA 의존도</td><td style="color:#ef4444;font-weight:600">85~90%</td><td class="green">40% 이하</td></tr>
+        <tr><td>직접 예약 비율</td><td style="color:#ef4444;font-weight:600">10~15%</td><td class="green">60% 이상</td></tr>
+        <tr><td>매출 대비 수수료율</td><td style="color:#ef4444;font-weight:600">36.5%</td><td class="green">15% 이하</td></tr>
+        <tr><td>모바일 숙박권 월 판매</td><td style="color:#ef4444;font-weight:600">0건</td><td class="green">650건</td></tr>
+        <tr><td>비수기 OCC</td><td style="color:#ef4444;font-weight:600">20% 이하</td><td class="green">20% 이상 유지</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 2. 현황 ===== -->
+<section class="section" id="status" style="background:#f0f1f5">
+  <span class="s-label">CURRENT STATUS</span>
+  <h2 class="s-title">2. 현황과 전환 필요성</h2>
+  <p class="s-sub">현 모델은 객실을 판매하고 체크아웃을 반복하는 단일 수익 구조. 비수기 고정비와 인력비를 상쇄하기 어렵고, OTA 수수료 의존이 수익성을 직접 잠식.</p>
+
+  <div class="vs-row">
+    <div class="vs-box now">
+      <div class="vs-label">현재 OTA 수수료율</div>
+      <div class="vs-value">36.5%</div>
+    </div>
+    <div class="vs-arrow">→</div>
+    <div class="vs-box goal">
+      <div class="vs-label">목표 수수료율</div>
+      <div class="vs-value">15%</div>
+    </div>
+  </div>
+
+  <div class="highlight-box warn">
+    <p>운영 인수 후 객실 판매량 전년 대비 2배 증가했으나, OTA 수수료로 인해 월평균 2,636만원 영업손실이 지속되는 구조.</p>
+  </div>
+
+  <div class="card">
+    <h3>🎯 전환의 핵심 지표</h3>
+    <ul>
+      <li>직접예약 비중 확대</li>
+      <li>고객 데이터 확보율</li>
+      <li>부가매출(식음·체험) 확장</li>
+      <li>비수기 점유 안정화</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📋 전환 원칙</h3>
+    <ul>
+      <li>OTA 의존을 단기간에 제거하지 않는다. 매출 믹스를 '직접채널 + 플랫폼 채널'로 재구성</li>
+      <li>모든 신규 상품은 '데이터가 남는 구매 구조' 우선 (구매자 식별, 잔여박수, 이용이력)</li>
+      <li>객실은 체류의 시작점으로만 두고, 체류 중 소비와 재방문을 설계</li>
+      <li>성수기 매출을 훼손하지 않도록 쿼터, 블랙아웃, 추가요금으로 레베뉴 매니지먼트 내장</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 3. 포지셔닝 ===== -->
+<section class="section" id="positioning">
+  <span class="s-label">POSITIONING</span>
+  <h2 class="s-title">3. 평창 자산 기반<br>플랫폼 포지셔닝</h2>
+  <p class="s-sub">해발 700m 고원 기후 · KTX 서울~평창 1시간 40분 · 2018 동계올림픽 인프라</p>
+
+  <div class="highlight-box">
+    <p>브랜드 문장: "고원에서 쉬고, 일하고, 놀고, 다시 돌아오는 체류 플랫폼"</p>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin-bottom:14px">사계절 콘텐츠-호텔 연계</h4>
+
+  <div class="season-card spring">
+    <div class="s-tag">봄 3~5월</div>
+    <h4>고원 산책 · 야생화 · 목장 개장</h4>
+    <p>대관령 하늘목장, 양떼목장, 오대산 선재길<br><strong>→ 워케이션 + 트레킹 패키지</strong></p>
+  </div>
+  <div class="season-card summer">
+    <div class="s-tag">여름 6~8월</div>
+    <h4>피서 휴양 · 계곡 · 래프팅</h4>
+    <p>흥정계곡, 동강 래프팅, 더위사냥축제<br><strong>→ 가족 프리미엄 장기체류</strong></p>
+  </div>
+  <div class="season-card autumn">
+    <div class="s-tag">가을 9~11월</div>
+    <h4>문학·미식 · 단풍 · 축제</h4>
+    <p>효석문화제(관광객 20만+), 백일홍축제<br><strong>→ MICE 오프사이트 + 축제 연계</strong></p>
+  </div>
+  <div class="season-card winter">
+    <div class="s-tag">겨울 12~2월</div>
+    <h4>스키 · 송어축제 · 눈꽃축제</h4>
+    <p>휘닉스파크, 송어축제, 대관령눈꽃축제<br><strong>→ 성수기 피크 매출 극대화</strong></p>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>📌 핵심 세그먼트</h3>
+    <ul>
+      <li>수도권 20-30 워케이션</li>
+      <li>가족 장기체류 (여름)</li>
+      <li>힐링·명상 (월정사 연계)</li>
+      <li>기업 오프사이트/MICE (가을·비수기)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 4. 플랫폼 설계 ===== -->
+<section class="section" id="platform" style="background:#f0f1f5">
+  <span class="s-label">PLATFORM DESIGN</span>
+  <h2 class="s-title">4. 서비스플랫폼<br>설계 (개념 구조)</h2>
+  <p class="s-sub">직접판매 도구(숙박권) + 체험/부가매출 마켓 + CRM을 하나의 운영체계로 통합</p>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-header col1">고객 접점</div>
+      <div class="flow-header col2">플랫폼 코어</div>
+      <div class="flow-header col3">수익/데이터</div>
+    </div>
+    <div class="flow-row"><div class="flow-item">자사몰/예약엔진</div><div class="flow-item">모바일 숙박권</div><div class="flow-item">OTA 수수료 절감</div></div>
+    <div class="flow-row"><div class="flow-item">카카오 선물하기</div><div class="flow-item">패키지/요금 룰</div><div class="flow-item">부가매출(식음·체험)</div></div>
+    <div class="flow-row"><div class="flow-item">네이버/복지몰</div><div class="flow-item">로컬 체험 마켓</div><div class="flow-item">CRM/세그먼트</div></div>
+    <div class="flow-row"><div class="flow-item">현장/콜센터</div><div class="flow-item">멤버십/포인트</div><div class="flow-item">KPI 대시보드</div></div>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">플랫폼이 해결하는 4가지 과제</h4>
+
+  <div class="card" style="border-left:4px solid #6366f1">
+    <h3>💰 수수료</h3>
+    <p>OTA 대신 자사몰/국내 커머스 채널에서 바우처를 판매해 수수료 구조를 0~15%로 재설계</p>
+  </div>
+  <div class="card" style="border-left:4px solid #059669">
+    <h3>💵 현금흐름</h3>
+    <p>비수기 객실을 선결제로 조기 판매해 현금흐름을 안정화</p>
+  </div>
+  <div class="card" style="border-left:4px solid #0891b2">
+    <h3>📊 데이터</h3>
+    <p>구매자 정보(이름, 연락처, 구매/이용 이력)를 직접 확보하여 CRM 시작점 확보</p>
+  </div>
+  <div class="card" style="border-left:4px solid #f59e0b">
+    <h3>🎯 부가매출</h3>
+    <p>로컬 체험·식음·교통을 패키지/마켓으로 묶어 객실 외 매출을 확장</p>
+  </div>
+</section>
+
+<!-- ===== 5. MVP ===== -->
+<section class="section" id="mvp">
+  <span class="s-label">STAGE 1 — MVP</span>
+  <h2 class="s-title">5. 모바일 숙박권<br>(선결제 바우처) 실행</h2>
+  <p class="s-sub">OTA 수수료 0% 구조로 판매 가능한 직접예약 전환의 핵심 도구</p>
+
+  <h4 style="font-size:15px;font-weight:700;margin-bottom:12px">5.1 상품 라인업 (4종)</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>패키지명</th><th>박수</th><th>판매가</th><th>1박 단가</th><th>타깃</th><th>유효기간</th></tr></thead>
+      <tbody>
+        <tr><td>힐링 스타터</td><td>2박</td><td>99,000원</td><td>49,500원</td><td>힐링·단기</td><td>6개월</td></tr>
+        <tr><td>워케이션 위크</td><td>5박</td><td>199,000원</td><td>39,800원</td><td>리모트워커</td><td>6개월</td></tr>
+        <tr><td>패밀리 롱스테이</td><td>14박</td><td>490,000원</td><td>35,000원</td><td>가족</td><td>12개월</td></tr>
+        <tr><td>프리미엄 올시즌</td><td>30박</td><td>990,000원</td><td>33,000원</td><td>장기·법인</td><td>12개월</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">5.2 운영 규칙 (핵심)</h4>
+  <div class="card">
+    <ul>
+      <li><strong>예약:</strong> 유효기간 내 공식 예약 사이트 또는 전화로 예약. 연속/분할 사용 모두 허용</li>
+      <li><strong>블랙아웃/추가요금:</strong> 성수기(12/22-1/3, 설·추석, 7/20-8/15) 1박당 30,000원 추가</li>
+      <li><strong>변경/노쇼:</strong> 투숙 3일 전까지 변경 무료. 노쇼 시 1박 차감</li>
+      <li><strong>재고 관리:</strong> 숙박권 전용 쿼터를 일일 최대 30실로 제한</li>
+    </ul>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">5.3 판매 채널 전략</h4>
+  <div class="ch-grid">
+    <div class="ch-card"><div class="ch-icon" style="background:#eef2ff">🏠</div><h4>자사몰</h4><p>우선 론칭, 예약/바우처/CRM 직접 연결</p></div>
+    <div class="ch-card"><div class="ch-icon" style="background:#e8f5e9">🛒</div><h4>네이버 스마트스토어</h4><p>검색 유입과 리뷰 자산 확보</p></div>
+    <div class="ch-card"><div class="ch-icon" style="background:#fff8e1">💬</div><h4>카카오톡 선물하기</h4><p>선물 수요 기반 신규 고객 유입</p></div>
+    <div class="ch-card"><div class="ch-icon" style="background:#fce4ec">🏢</div><h4>기업 복지몰/B2B</h4><p>베네피아, 이지웰 등 비수기 물량 확보</p></div>
+  </div>
+</section>
+
+<!-- ===== 6. 마케팅 ===== -->
+<section class="section" id="marketing" style="background:#f0f1f5">
+  <span class="s-label">MARKETING</span>
+  <h2 class="s-title">6. 획득-전환-재방문<br>마케팅 운영</h2>
+  <p class="s-sub">숙박권은 '상품'이면서 동시에 CRM 데이터 수집 장치</p>
+
+  <h4 style="font-size:15px;font-weight:700;margin-bottom:12px">6.1 채널별 콘텐츠 운영</h4>
+  <div class="mx-card"><div class="mx-icon" style="background:#fce4ec">📸</div><div><h4>인스타그램</h4><p>객실·로봇·평창 풍경 숏폼 영상</p><div class="mx-freq">주 3~4회 · 테크 호스피탈리티</div></div></div>
+  <div class="mx-card"><div class="mx-icon" style="background:#e8f5e9">📝</div><div><h4>네이버 블로그</h4><p>워케이션·가족여행 체험 후기형 글</p><div class="mx-freq">주 2회 · 평창 장기체류 가이드</div></div></div>
+  <div class="mx-card"><div class="mx-icon" style="background:#fff8e1">💬</div><div><h4>카카오 채널</h4><p>숙박권 프로모션·시즌 이벤트 안내</p><div class="mx-freq">주 1~2회 · 선물·구매 전환</div></div></div>
+  <div class="mx-card"><div class="mx-icon" style="background:#ede9fe">🎬</div><div><h4>유튜브</h4><p>배달로봇 룸서비스·평창 액티비티</p><div class="mx-freq">월 2~3회 · 바이럴·호기심</div></div></div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:24px 0 12px">6.2 시즌 이벤트 캘린더</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>시기</th><th>이벤트</th><th>연계 숙박권</th><th>목표</th></tr></thead>
+      <tbody>
+        <tr><td>4월</td><td>론칭 얼리버드</td><td>전 패키지 10%↓</td><td class="hl">초기 200건</td></tr>
+        <tr><td>5월</td><td>가족 선물 프로모션</td><td>패밀리+카카오</td><td class="hl">카카오 월100건</td></tr>
+        <tr><td>6~7월</td><td>여름 워케이션 특가</td><td>위크+래프팅</td><td class="hl">비수기→성수기</td></tr>
+        <tr><td>9월</td><td>효석문화제 연계</td><td>스타터+축제입장</td><td class="hl">관광객 20만</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:24px 0 12px">6.3 CRM 설계 (전환 후)</h4>
+  <div class="card">
+    <h3>👥 세그먼트</h3>
+    <p>워케이션 / 가족 / 힐링 / 스키·액티비티 / 기업(MICE)</p>
+  </div>
+
+  <h5 style="font-size:13px;font-weight:600;color:#888;margin:12px 0 10px">CRM 트리거 플로우</h5>
+  <div class="crm-flow">
+    <div class="crm-step"><div class="crm-icon">🛒</div><h5>구매 직후</h5><p>사용 가이드 발송</p></div>
+    <div class="crm-step"><div class="crm-icon">⏰</div><h5>D-30/15/7</h5><p>미사용 방지 알림</p></div>
+    <div class="crm-step"><div class="crm-icon">🏨</div><h5>체크아웃 D+3</h5><p>리뷰/재구매 유도</p></div>
+    <div class="crm-step"><div class="crm-icon">🎂</div><h5>생일/기념일</h5><p>선물 제안</p></div>
+    <div class="crm-step"><div class="crm-icon">🔄</div><h5>리텐션</h5><p>업그레이드/쿠폰</p></div>
+  </div>
+</section>
+
+<!-- ===== 7. 로컬콘텐츠 ===== -->
+<section class="section" id="local">
+  <span class="s-label">STAGE 2 — LOCAL CONTENT</span>
+  <h2 class="s-title">7. 평창 로컬콘텐츠를<br>'호텔 상품'으로 통합</h2>
+  <p class="s-sub">지역 자산을 단순 추천이 아니라 '예약 가능한 상품'으로 전환</p>
+
+  <div class="card">
+    <h3>📦 패키지 예시 (초기 10종)</h3>
+    <ul>
+      <li>워케이션 위크 + 업무존 + 오대산 선재길 트레킹(반일)</li>
+      <li>힐링 스타터 + 월정사 전나무숲길 명상(템플스테이)</li>
+      <li>패밀리 롱스테이 + 목장 체험(하늘/양떼목장) + 키즈 메뉴</li>
+      <li>여름 워케이션/가족 + 동강 래프팅 + 늦은 체크아웃</li>
+      <li>가을 효석문화제 + 로컬 미식(봉평 메밀/황태) 테이스팅</li>
+      <li>겨울 스키 셔틀/장비 렌탈 + 송어축제 티켓 패키지</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🤝 파트너 운영 원칙</h3>
+    <ul>
+      <li><strong>정산:</strong> 중개 수수료(10~20%) 또는 순매출 쉐어로 단순화</li>
+      <li><strong>품질:</strong> 리뷰/CS 기준을 계약에 포함(취소·환불·대체 제공)</li>
+      <li><strong>재고:</strong> 체험은 날짜/시간별 슬롯으로 판매해 현장 혼선 방지</li>
+      <li><strong>데이터:</strong> 구매자 식별 가능 형태로 예약 정보 공유(개인정보 동의)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 8. 로드맵 ===== -->
+<section class="section" id="roadmap" style="background:#f0f1f5">
+  <span class="s-label">ROADMAP</span>
+  <h2 class="s-title">8. 운영체계와<br>구현 로드맵</h2>
+  <p class="s-sub">'경량 MVP → 연동 확대' 순서로 진행</p>
+
+  <div class="card">
+    <h3>⚙️ 시스템 구성 (권장 최소)</h3>
+    <ul>
+      <li><strong>예약/결제:</strong> 부킹엔진 + PG + 바우처 발행(고유번호/QR)</li>
+      <li><strong>운영 연동:</strong> PMS 예약 등록, 재고/쿼터 관리</li>
+      <li><strong>CRM:</strong> 고객 프로필, 구매/투숙 이력, 메시지 발송</li>
+      <li><strong>분석:</strong> 채널별 판매, 미사용률, 직접예약 전환, 부가매출</li>
+    </ul>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">구축 일정</h4>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-date">2월 3~4주</div><h4>부킹엔진 솔루션 비교·선정</h4><p>최소 3개사 견적 비교</p><div class="tl-badge">IT / 경영지원</div></div>
+    <div class="tl-item"><div class="tl-date">3월 1~2주</div><h4>PG사 계약, 결제 모듈 연동</h4><p>바우처 DB 설계</p><div class="tl-badge">IT / 외주개발사</div></div>
+    <div class="tl-item"><div class="tl-date">3월 3~4주</div><h4>스토어 페이지 디자인·개발</h4><p>PMS 연동 테스트</p><div class="tl-badge">IT / 마케팅</div></div>
+    <div class="tl-item"><div class="tl-date">4월 1주</div><h4>내부 테스트</h4><p>직원 대상 시범 구매·예약·투숙 검증</p><div class="tl-badge">전 부서</div></div>
+    <div class="tl-item"><div class="tl-date">4월 2주</div><h4>정식 론칭</h4><p>SNS·블로그 홍보 시작</p><div class="tl-badge">마케팅</div></div>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:24px 0 12px">12개월 마일스톤</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>시기</th><th>핵심 마일스톤</th><th>판매 채널</th><th>월 목표</th></tr></thead>
+      <tbody>
+        <tr><td>2~3월</td><td style="text-align:left;font-weight:400">부킹엔진 구축, PG 연동</td><td>준비 단계</td><td>-</td></tr>
+        <tr><td>4월</td><td style="text-align:left;font-weight:400">자사몰+네이버 론칭</td><td>자사몰, 네이버</td><td class="hl">200건</td></tr>
+        <tr><td>5월</td><td style="text-align:left;font-weight:400">카카오 입점, 가정의달</td><td>+카카오</td><td class="hl">400건</td></tr>
+        <tr><td>6~7월</td><td style="text-align:left;font-weight:400">복지몰 입점, 여름 캠페인</td><td>전 채널</td><td class="hl">650건</td></tr>
+        <tr><td>8~9월</td><td style="text-align:left;font-weight:400">효석문화제, CRM 재구매</td><td>+CRM</td><td class="hl">650건</td></tr>
+        <tr><td>10~12월</td><td style="text-align:left;font-weight:400">연말 선물, 스키 시즌</td><td>전 채널</td><td class="hl">700건+</td></tr>
+        <tr><td>1~2월('27)</td><td style="text-align:left;font-weight:400">성과 분석, 멤버십 도입</td><td>+멤버십</td><td class="green">직접 60%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 9. KPI / 재무 ===== -->
+<section class="section" id="kpi">
+  <span class="s-label">KPI &amp; FINANCE</span>
+  <h2 class="s-title">9. KPI, 재무 임팩트,<br>리스크 관리</h2>
+
+  <div class="card">
+    <h3>📈 KPI 제안</h3>
+    <ul>
+      <li><strong>채널 믹스:</strong> 직접예약 비율, OTA 의존도, 채널별 CAC</li>
+      <li><strong>숙박권:</strong> 월 판매(건), 패키지 믹스, 미사용률, 환불률</li>
+      <li><strong>수익성:</strong> OTA 수수료율, 객실당 부가매출, 총 기여이익</li>
+      <li><strong>리텐션:</strong> 재구매율, 2회 이상 방문 비중, 멤버십 전환율</li>
+    </ul>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:20px 0 12px">숙박권 월 매출/순매출 시나리오</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>패키지</th><th>월 목표</th><th>단가</th><th>월 매출</th><th>수수료</th><th>순매출</th></tr></thead>
+      <tbody>
+        <tr><td>힐링 스타터</td><td>300건</td><td>99,000</td><td>2,970만</td><td>5%</td><td class="green">2,822만</td></tr>
+        <tr><td>워케이션 위크</td><td>200건</td><td>199,000</td><td>3,980만</td><td>5%</td><td class="green">3,781만</td></tr>
+        <tr><td>패밀리 롱스테이</td><td>100건</td><td>490,000</td><td>4,900만</td><td>4%</td><td class="green">4,704만</td></tr>
+        <tr><td>프리미엄 올시즌</td><td>50건</td><td>990,000</td><td>4,950만</td><td>3%</td><td class="green">4,802만</td></tr>
+        <tr><td>합계</td><td>650건</td><td>-</td><td style="color:#6366f1;font-weight:800">1.68억</td><td>4.2%</td><td class="green" style="font-size:14px">1.61억</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 style="font-size:15px;font-weight:700;margin:24px 0 12px">주요 리스크와 대응</h4>
+
+  <div class="risk-card">
+    <h4>성수기 집중 사용으로 객실 부족 <span class="risk-level mid">중간</span></h4>
+    <p>성수기 추가요금(3만원/박) + 숙박권 전용 쿼터(일일 최대 30실) 운영</p>
+    <div class="risk-metric">모니터링: 일별 바우처 예약 비율</div>
+  </div>
+  <div class="risk-card">
+    <h4>판매 부진 (월 650건 미달) <span class="risk-level mid">중간</span></h4>
+    <p>론칭 3개월 후 가격·혜택 재조정, 프로모션 강화</p>
+    <div class="risk-metric">모니터링: 월별 채널별 판매 건수</div>
+  </div>
+  <div class="risk-card" style="border-left-color:#059669">
+    <h4>대량 환불 요청 <span class="risk-level low">낮음</span></h4>
+    <p>7일 이내 전액환불 + 이후 사용분 정상가 차감 구조로 리스크 헷지</p>
+    <div class="risk-metric">모니터링: 월 환불률 (5% 이하 목표)</div>
+  </div>
+  <div class="risk-card">
+    <h4>카카오·네이버 입점 지연 <span class="risk-level mid">중간</span></h4>
+    <p>자사몰 우선 론칭으로 시간 확보, 입점 병행 추진</p>
+    <div class="risk-metric">모니터링: 입점 진행 상태 주간 체크</div>
+  </div>
+</section>
+
+<!-- ===== 10. 의사결정 ===== -->
+<section class="section" id="decision" style="background:#f0f1f5">
+  <span class="s-label">DECISION REQUIRED</span>
+  <h2 class="s-title">10. 의사결정 필요 사항</h2>
+  <p class="s-sub">경영진 체크리스트</p>
+
+  <ol class="checklist">
+    <li><span class="ck-num">1</span><span>숙박권 가격/혜택 최종 확정 (4종 유지 vs 3종 단순화)</span></li>
+    <li><span class="ck-num">2</span><span>성수기 쿼터와 추가요금 정책 승인 (일일 최대 30실, 3만원/박)</span></li>
+    <li><span class="ck-num">3</span><span>부킹엔진/바우처 시스템 구축 방식 (SaaS 도입 vs 외주 개발)</span></li>
+    <li><span class="ck-num">4</span><span>우선 제휴 리스트와 정산 조건 (템플스테이/목장/래프팅/스키/축제)</span></li>
+    <li><span class="ck-num">5</span><span>CRM 운영 인력/권한 (마케팅 메시지, 쿠폰, 재구매 정책)</span></li>
+  </ol>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <h3>호텔어라운드 평창</h3>
+  <div class="f-sub">서비스플랫폼 전환 기획안 · 2026-02</div>
+  <div class="f-tag">대외비 · 내부 검토용</div>
+</footer>
+
+<!-- ===== SCROLL NAV ===== -->
+<script>
+  const sections=document.querySelectorAll('.section[id]');
+  const navLinks=document.querySelectorAll('.nav a');
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        navLinks.forEach(l=>{
+          l.classList.remove('active');
+          if(l.getAttribute('href')==='#'+entry.target.id) l.classList.add('active');
+        });
+      }
+    });
+  },{rootMargin:'-40% 0px -60% 0px'});
+  sections.forEach(s=>observer.observe(s));
+</script>
+
+</body>
+</html>
